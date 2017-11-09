@@ -1,0 +1,23 @@
+{
+    "name": "pfinal/identity-card",
+    "description": "Chinese Identity Card package",
+    "keywords": ["identity", "personal identity card", "Chinese"],
+    "license": "MIT",
+    "homepage": "http://www.pfinal.cn",
+    "support": {
+        "source": "https://github.com/pfinal/identity-card"
+    },
+    "authors": [
+        {
+            "name": "Zou Yiliang"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "PFinal\\IdentityCard\\": "src/"
+        }
+    }
+}
