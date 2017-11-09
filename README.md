@@ -25,8 +25,8 @@ $birthday = IDCard::getBirthday('440105199101301233');
 $gender = IDCard::getGender('440105199101301233');
 
 //地区信息
-//需要开启了pdo sqlite扩展
-//composer require "douyasi/identity-card"
+//安装组件 composer require "douyasi/identity-card"
+//需要开启 pdo sqlite 扩展
 $area = IDCard::getArea('440105199101301233');
 
 

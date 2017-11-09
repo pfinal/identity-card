@@ -2,11 +2,10 @@
 
 namespace PFinal\IdentityCard;
 
-//如果需要获取地区信息，并且开启了pdo sqlite扩展，可以使用另一个组件库 https://github.com/douyasi/identity-card
 class IDCard
 {
-    const GENDER_MALE = 1;
-    const GENDER_FEMALE = 2;
+    const GENDER_MALE = 1;   //男
+    const GENDER_FEMALE = 2; //女
 
     /**
      * 验证身份证是否有效
@@ -31,7 +30,7 @@ class IDCard
             return false;
         }
 
-        if (!static::birthday($IDCard)) {
+        if (!static::getBirthday($IDCard)) {
             return false;
         }
 
@@ -47,7 +46,7 @@ class IDCard
      * @param $IDCardBody
      * @return bool|string
      */
-    protected static function calcIDCardCode($IDCardBody)
+    public static function calcIDCardCode($IDCardBody)
     {
         if (strlen($IDCardBody) != 17) {
             return false;
@@ -95,7 +94,7 @@ class IDCard
      * @param $IDCard
      * @return bool|string 例如 "1990-01-30" 失败返回false
      */
-    public static function birthday($IDCard)
+    public static function getBirthday($IDCard)
     {
         if (strlen($IDCard) != 18) {
             return false;
@@ -125,7 +124,7 @@ class IDCard
      *
      * @return int IDCard::GENDER_FEMALE 男(1)  IDCard::GENDER_FEMALE 女 (2)
      */
-    public static function gender($IDCard)
+    public static function getGender($IDCard)
     {
         if (strlen($IDCard) == 18) {
             $gender = $IDCard[16];
@@ -153,5 +152,46 @@ class IDCard
         $monthDay = date('md') - substr($IDCard, 10, 4);
 
         return $year > $minAge || $year == $minAge && $monthDay > 0;
+    }
+
+    /**
+     * 获取年龄
+     *
+     * 计算方法不是年份直接减，而是按秒算年，满年则加，未满向下取整，故实际算出的年龄可能比常规和虚岁小到1-2岁
+     *
+     * @param  string $IDCard
+     * @return int|bool 返回年龄，身份证或出生年月日未校验通过则返回false
+     */
+    public function getAge($IDCard)
+    {
+        if (!static::validate($IDCard)) {
+            return false;
+        }
+
+        $birthday = strtotime(substr($IDCard, 6, 8));
+        $today = strtotime('today');
+        $diff = floor(($today - $birthday) / 86400 / 365);
+        $age = strtotime(substr($IDCard, 6, 8) . ' +' . $diff . 'years') > $today ? ($diff + 1) : $diff;
+
+        return $age;
+    }
+
+    /**
+     * 根据身份证证号获取所在地区
+     *
+     * composer require "douyasi/identity-card"
+     *
+     * 需要开启了pdo sqlite扩展
+     *
+     * @see https://github.com/douyasi/identity-card
+     *
+     * @param $IDCard
+     * @return array
+     */
+    public static function getArea($IDCard)
+    {
+        $ID = new \Douyasi\IdentityCard\ID();
+
+        return $ID->getArea($IDCard);
     }
 }
