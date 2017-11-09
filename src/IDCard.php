@@ -2,6 +2,7 @@
 
 namespace PFinal\IdentityCard;
 
+//如果需要获取地区信息，并且开启了pdo sqlite扩展，可以使用另一个组件库 https://github.com/douyasi/identity-card
 class IDCard
 {
     const GENDER_MALE = 1;
